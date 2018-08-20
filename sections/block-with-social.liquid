@@ -1,0 +1,95 @@
+<section class="block-with-social">
+  <div class="container container-fluid--md">
+    <div class="row">
+      <div class="col-12 col-md-8 bg-white">
+        {% if section.settings.block_text != blank %}
+          <div class="block--text">
+            {{ section.settings.block_text }}
+          </div>
+        {% else if section.settings.block_image != blank %}
+          <div class="block--image">
+            {% include 'responsive-image' with
+              image: section.settings.block_image,
+              max_width: 545,
+              max_height: 545
+            %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="col-12 col-md-4 bg-yellow">
+        <div class="block-heading">
+          <h1 class="block-heading--title">
+            {{ section.settings.title | escape }}
+          </h1>
+        </div>
+        {%- assign social_accounts = 'Facebook, Twitter, Snapchat, google-plus,' | split: ', ' -%}
+        <ul class="social-list">
+          {% for social in social_accounts %}
+            {%- assign social_handle = social | handleize -%}
+            {% capture social_link %}social_{{ social_handle }}_link{% endcapture %}
+            {% capture social_icon %}icon-{{ social_handle }}{% endcapture %}
+      
+            {% if settings[social_link] != blank %}
+              <li class="social-list--item">
+                <a class="social-list--link" href="{{ settings[social_link] }}" title="{{ 'layout.footer.social_platform' | t: name: shop.name, platform: social }}">
+                  <i class="fa fa-{{ social_handle }}" aria-hidden="true"></i>
+                </a>
+              </li>
+            {% endif %}
+      
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+  {
+    "name": "Block with Social",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Section Title",
+        "default": "Example Section Title"
+      },
+      {
+        "type": "image_picker",
+        "id": "block_image",
+        "label": "Section Image"
+      },
+      {
+        "type": "richtext",
+        "id": "block_text",
+        "label": "Section Content"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Block with Social",
+        "category": "Text"
+      }
+    ]
+  }
+{% endschema %}
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "{{ shop.name }}",
+  "sameAs": [
+    "{{ settings.social_twitter_link }}",
+    "{{ settings.social_facebook_link }}",
+    "{{ settings.social_snapchat_link }}",
+    "{{ settings.social_google-plus_link }}"
+  ],
+  "url": "{{ shop.url }}{{ page.url }}"
+}
+</script>
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
